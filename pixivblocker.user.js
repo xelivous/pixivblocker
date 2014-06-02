@@ -4,7 +4,7 @@
 // @description nuke shit
 // @include     /http://.*pixiv\.net/.*/
 // @include     /https?://.*pixiv\.net/.*/
-// @version     1.0.1
+// @version     1.0.2
 // @grant       none
 // ==/UserScript==
 function PB_CFG_CREATE() {
@@ -171,7 +171,6 @@ function PB_CFG_CREATE() {
             //add list of shitusers at bottom of page
             var coollist = document.createElement('ul');
             coollist.className = "pixivblocker_shitusers";
-            coollist.innerHTML = "<h3>Shit users you've blocked:</h3>"
             for(var v = 0; v < shitusers.length; v++){
                 var coolitem = document.createElement('li');
                 
@@ -184,8 +183,9 @@ function PB_CFG_CREATE() {
                 
                 coolitem.innerHTML = shitusers[v] + " " + coolspan.outerHTML;
                 
-                coollist.innerHTML += coolitem.outerHTML + "\n";
+                coollist.innerHTML = coolitem.outerHTML + "\r\n" + coollist.innerHTML;
             }
+            coollist.innerHTML = "<h3>Shit users you've blocked:</h3>\r\n" + coollist.innerHTML;
             var targetcontainer = testElements.item(0).parentNode.parentNode;
             targetcontainer.insertBefore(coollist, targetcontainer.nextSibling);
         }
