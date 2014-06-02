@@ -4,7 +4,7 @@
 // @description nuke shit
 // @include     /http://.*pixiv\.net/.*/
 // @include     /https?://.*pixiv\.net/.*/
-// @version     1.0.0
+// @version     1.0.1
 // @grant       none
 // ==/UserScript==
 function PB_CFG_CREATE() {
@@ -21,9 +21,7 @@ function PB_CFG_CREATE() {
                 'Planeptune',
                 'サイバネティック蟹',
                 'Hardpoint',
-                'electric she...',
                 'jantosze',
-                '猫主席(archeryv...',
                 'superseo34',
                 'Bristles',
                 '星野',
@@ -72,7 +70,11 @@ function PB_CFG_CREATE() {
                 '米野',
                 'P2',
                 'pregnant_3d',
-                '白沢御飯'
+                '白沢御飯',
+                'ろくよん',
+                'poop',
+                'クロカジ',
+                '鈴'
             ]
         },
         getArray: function (myvar)
@@ -142,7 +144,7 @@ function PB_CFG_CREATE() {
             var coolspan;
             //go through list of thumbnails and add stuff to them
             for (var v = 0, u = null; v < testElements.length; v++, u = null) {
-                u = testElements.item(v).childNodes[1].textContent;
+                u = testElements.item(v).childNodes[1].attributes['data-user_name'].value;
                 
                 //add +/- next to names
                 coolspan = document.createElement('span');
