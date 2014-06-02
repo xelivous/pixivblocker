@@ -169,6 +169,7 @@ function PB_CFG_CREATE() {
             //add list of shitusers at bottom of page
             var coollist = document.createElement('ul');
             coollist.className = "pixivblocker_shitusers";
+            coollist.innerHTML = "<h3>Shit users you've blocked:</h3>"
             for(var v = 0; v < shitusers.length; v++){
                 var coolitem = document.createElement('li');
                 
@@ -194,8 +195,9 @@ function populateCSS(){
 
     ourcss += ".pixivblocker_minus { padding:0px 4px; background: #77FF88; color:#FFF; cursor:pointer;}";
     ourcss += ".pixivblocker_plus { padding:0px 4px; background: #FF7788; color:#FFF; cursor:pointer; margin-left:5px;}";
-    ourcss += ".pixivblocker_shitusers{ list-style: none; display:block; width:95%; margin:auto; }";
-    ourcss += ".pixivblocker_shitusers li { display:inline-block; background: rgba(0,0,0,.1); margin:5px;}";
+    ourcss += ".pixivblocker_shitusers { list-style: none; display:block; width:95%; margin:auto; margin-bottom: 15px; }";
+    ourcss += ".pixivblocker_shitusers h3 { font-weight: bolder; }"
+    ourcss += ".pixivblocker_shitusers li { padding-left:3px; display:inline-block; background: rgba(0,0,0,.1); margin:5px;}";
     //ourcss += ".pixivblocker_shitusers li:after { content: ', '}";
     //ourcss += ".pixivblocker_shitusers li:last-child:after {content: ''; }";
 
