@@ -4,7 +4,7 @@
 // @description nuke shit
 // @include     /http://.*pixiv\.net/.*/
 // @include     /https?://.*pixiv\.net/.*/
-// @version     1.0.5
+// @version     1.0.6
 // @grant       none
 // ==/UserScript==
 function PB_CFG_CREATE() {
@@ -131,6 +131,17 @@ function PB_CFG_CREATE() {
             }
             return false;
         },
+        nukeThumbs: function(username){
+            var allElements = document.getElementsByClassName('image-item');
+            for (var i = 0, n = allElements.length; i < n; i++)
+            {
+                if (allElements[i].childNodes[1].attributes['data-user_name'].value === username)
+                {
+                    // Element exists with attribute. Add to array.
+                    allElements[i].parentNode.removeChild(allElements[i]);
+                }
+            }
+        },
         init: function ()
         {
             var shitusers = PB_CFG.getArray('shitusers');
@@ -159,7 +170,7 @@ function PB_CFG_CREATE() {
                 }
                 else{
                     coolspan.className = "pixivblocker_plus";
-                    coolspan.setAttribute("onclick", "if(PB_CFG.listManage('shitusers','"+u+"')) this.parentNode.parentNode.removeChild(this.parentNode);");
+                    coolspan.setAttribute("onclick", "if(PB_CFG.listManage('shitusers','"+u+"')) PB_CFG.nukeThumbs('"+u+"');");
                     coolspan.innerHTML = "🚫";
                     coolspan.title = "Add user to pixivblocker";
                 }
