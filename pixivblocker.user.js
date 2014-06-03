@@ -4,78 +4,13 @@
 // @description nuke shit
 // @include     /http://.*pixiv\.net/.*/
 // @include     /https?://.*pixiv\.net/.*/
-// @version     1.1.0
+// @version     1.1.1
 // @grant       none
 // ==/UserScript==
 function PB_CFG_CREATE() {
     return {
         'settings' : {
-            'shitusers': [
-                'KALECHIP',
-                'plorb',
-                'Streled01',
-                'Xen',
-                'RYU',
-                'ome',
-                'keiko66613',
-                'Planeptune',
-                'サイバネティック蟹',
-                'Hardpoint',
-                'jantosze',
-                'superseo34',
-                'Bristles',
-                '星野',
-                'みおん_orz',
-                'maxsmeagol',
-                'soja23',
-                'axel',
-                'Canastus',
-                '泥　どねる',
-                'zzz',
-                'Cote',
-                'ユウキ',
-                'ケモノ武士',
-                'ざｔ',
-                '雲呑汁',
-                'TSB',
-                'くしな　くぅえる(空・L)',
-                'TDn\'A',
-                'hoshime',
-                'Nurinaki',
-                'クマジ',
-                '兵器送貨員‧真改',
-                'sparky_the_chu',
-                'Sexylark',
-                'ss2',
-                'neurodyne',
-                'アマシュン',
-                'Konata5',
-                'Kyoma[充電中]',
-                'karintou18',
-                '元気',
-                'ガルバニー電流',
-                '緋乃ひの',
-                'おくに（一志）',
-                'るーあ',
-                'chkeal',
-                'Southern_Cross',
-                '黒点魚',
-                'ナオキ（渋麻呂）',
-                '焼き蛇',
-                'mrjeckil',
-                'ThunderFuck',
-                'Temon',
-                '狼小魂',
-                'any2000',
-                '米野',
-                'P2',
-                'pregnant_3d',
-                '白沢御飯',
-                'ろくよん',
-                'poop',
-                'クロカジ',
-                '鈴'
-            ]
+            'shitusers': []
         },
         getArray: function (myvar)
         {
