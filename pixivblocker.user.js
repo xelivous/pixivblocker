@@ -4,7 +4,7 @@
 // @description nuke shit
 // @include     /http://.*pixiv\.net/.*/
 // @include     /https?://.*pixiv\.net/.*/
-// @version     1.0.6
+// @version     1.1.0
 // @grant       none
 // ==/UserScript==
 function PB_CFG_CREATE() {
@@ -97,6 +97,28 @@ function PB_CFG_CREATE() {
                 console.log('Error: ' + e);
             }
         },
+        nukeSetting: function(settvar){
+            try {
+                if(confirm('Really unblock all users??')){
+                    localStorage.removeItem(settvar);
+                }
+            } catch (e) {
+                console.log('Error: ' + e);
+            }
+        },
+        exportSetting: function (settvar){
+            alert("Copy the following:\r\n\r\n" + localStorage.getItem(settvar));  
+        },
+        importSetting: function (settvar){
+            try {
+                var wef = prompt("Paste your blocked users separated by comma:");
+                if(wef){
+                   localStorage.setItem(settvar, wef);
+                }
+            } catch (e) {
+                console.log('Error: ' + e);
+            }
+        },
         arrayContains: function (needle, arrhaystack)
         {
             return (arrhaystack.indexOf(needle) > - 1);
@@ -135,12 +157,15 @@ function PB_CFG_CREATE() {
             var allElements = document.getElementsByClassName('image-item');
             for (var i = 0, n = allElements.length; i < n; i++)
             {
-                if (allElements[i].childNodes[1].attributes['data-user_name'].value === username)
+                if (this.sescape(allElements[i].childNodes[1].attributes['data-user_name'].value) === username)
                 {
                     // Element exists with attribute. Add to array.
                     allElements[i].parentNode.removeChild(allElements[i]);
                 }
             }
+        },
+        sescape: function(v){
+            return v.replace(/&/, "&amp;").replace(/'/g, "&#39;").replace(/"/g, "&quot;");
         },
         init: function ()
         {
@@ -152,7 +177,8 @@ function PB_CFG_CREATE() {
             var coolspan;
             //go through list of thumbnails and add stuff to them
             for (var v = 0, u = null; v < testElements.length; v++, u = null) {
-                u = testElements.item(v).childNodes[1].attributes['data-user_name'].value;
+                u = testElements.item(v).childNodes[1].attributes['data-user_name'].value
+                u = this.sescape(u);
                 
                 //add +/- next to names
                 coolspan = document.createElement('span');
@@ -173,14 +199,32 @@ function PB_CFG_CREATE() {
                     coolspan.setAttribute("onclick", "if(PB_CFG.listManage('shitusers','"+u+"')) PB_CFG.nukeThumbs('"+u+"');");
                     coolspan.innerHTML = "🚫";
                     coolspan.title = "Add user to pixivblocker";
+                    testElements.item(v).insertBefore(coolspan, testElements.item(v).childNodes[1].nextSibling);
                 }
-                testElements.item(v).insertBefore(coolspan, testElements.item(v).childNodes[1].nextSibling);
             }
             
             //add list of shitusers at bottom of page
             var cooldiv = document.createElement('div');
             cooldiv.className = "pixivblocker_shitdiv";
             cooldiv.innerHTML = "<h3>Shit users you've blocked: <small>(hover me)</small></h3>\r\n";
+            
+            var coolbutton = document.createElement('button');
+            coolbutton.type = "button";
+            coolbutton.innerHTML += "!! Unblock all users !!";
+            coolbutton.setAttribute("onclick", "PB_CFG.nukeSetting('shitusers');");
+            cooldiv.innerHTML += coolbutton.outerHTML;
+            
+            coolbutton = document.createElement('button');
+            coolbutton.type = "button";
+            coolbutton.innerHTML += "EXPORT";
+            coolbutton.setAttribute("onclick", "PB_CFG.exportSetting('shitusers');");
+            cooldiv.innerHTML += coolbutton.outerHTML;
+            
+            coolbutton = document.createElement('button');
+            coolbutton.type = "button";
+            coolbutton.innerHTML += "IMPORT";
+            coolbutton.setAttribute("onclick", "PB_CFG.importSetting('shitusers');");
+            cooldiv.innerHTML += coolbutton.outerHTML;
             
             var coollist = document.createElement('ul');
             coollist.className = "pixivblocker_shitusers";
@@ -199,6 +243,7 @@ function PB_CFG_CREATE() {
                 coollist.innerHTML = coolitem.outerHTML + "\r\n" + coollist.innerHTML;
             }
             cooldiv.innerHTML += coollist.outerHTML;
+            
             var targetcontainer = testElements.item(0).parentNode.parentNode;
             targetcontainer.insertBefore(cooldiv, targetcontainer.nextSibling);
         }
@@ -247,5 +292,5 @@ PB_CFG_CREATE.toString()+
 'var PB_CFG = new PB_CFG_CREATE();'+
 'PB_CFG.init();';
 
-addJS(cooljs);
-populateCSS();
+    addJS(cooljs);
+    populateCSS();
