@@ -4,7 +4,7 @@
 // @description nuke shit
 // @include     /http://.*pixiv\.net/.*/
 // @include     /https?://.*pixiv\.net/.*/
-// @version     1.0.2
+// @version     1.0.3
 // @grant       none
 // ==/UserScript==
 function PB_CFG_CREATE() {
@@ -169,6 +169,10 @@ function PB_CFG_CREATE() {
             }
             
             //add list of shitusers at bottom of page
+            var cooldiv = document.createElement('div');
+            cooldiv.className = "pixivblocker_shitdiv";
+            cooldiv.innerHTML = "<h3>Shit users you've blocked: <small>(hover me)</small></h3>\r\n";
+            
             var coollist = document.createElement('ul');
             coollist.className = "pixivblocker_shitusers";
             for(var v = 0; v < shitusers.length; v++){
@@ -185,9 +189,9 @@ function PB_CFG_CREATE() {
                 
                 coollist.innerHTML = coolitem.outerHTML + "\r\n" + coollist.innerHTML;
             }
-            coollist.innerHTML = "<h3>Shit users you've blocked:</h3>\r\n" + coollist.innerHTML;
+            cooldiv.innerHTML += coollist.outerHTML;
             var targetcontainer = testElements.item(0).parentNode.parentNode;
-            targetcontainer.insertBefore(coollist, targetcontainer.nextSibling);
+            targetcontainer.insertBefore(cooldiv, targetcontainer.nextSibling);
         }
     };
 }
@@ -197,9 +201,12 @@ function populateCSS(){
 
     ourcss += ".pixivblocker_minus { padding:0px 4px; background: #77FF88; color:#FFF; cursor:pointer;}";
     ourcss += ".pixivblocker_plus { padding:0px 4px; background: #FF7788; color:#FFF; cursor:pointer; margin-left:5px;}";
-    ourcss += ".pixivblocker_shitusers { list-style: none; display:block; width:95%; margin:auto; margin-bottom: 15px; }";
-    ourcss += ".pixivblocker_shitusers h3 { font-weight: bolder; }"
-    ourcss += ".pixivblocker_shitusers li { padding-left:3px; display:inline-block; background: rgba(0,0,0,.1); margin:5px;}";
+    ourcss += ".pixivblocker_shitdiv {width:95%; margin:auto; margin-bottom: 15px; border-bottom: 2px dashed rgba(0,0,0,.2);}";
+    ourcss += ".pixivblocker_shitdiv ul {max-height: 0; transition: max-height 1s ease-out .4s; overflow: hidden; list-style: none; display:block;}";
+    ourcss += ".pixivblocker_shitdiv:hover ul {max-height:9999px; transition: max-height 1s ease-in .4s;}";
+    ourcss += ".pixivblocker_shitdiv h3 { font-weight: bolder; font-size: 110%; margin-bottom: 5px;}";
+    ourcss += ".pixivblocker_shitdiv h3 small { font-size: 70%;}";
+    ourcss += ".pixivblocker_shitdiv ul li { padding-left:3px; display:inline-block; background: rgba(0,0,0,.1); margin:5px;}";
     //ourcss += ".pixivblocker_shitusers li:after { content: ', '}";
     //ourcss += ".pixivblocker_shitusers li:last-child:after {content: ''; }";
 
