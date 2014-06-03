@@ -4,7 +4,7 @@
 // @description nuke shit
 // @include     /http://.*pixiv\.net/.*/
 // @include     /https?://.*pixiv\.net/.*/
-// @version     1.1.3
+// @version     1.1.4
 // @grant       none
 // ==/UserScript==
 function PB_CFG_CREATE() {
@@ -180,7 +180,12 @@ function PB_CFG_CREATE() {
             cooldiv.innerHTML += coollist.outerHTML;
             
             var targetcontainer = document.getElementsByClassName('layout-body')[0];
-            targetcontainer.childNodes[0].appendChild(cooldiv);
+            var num = 0;
+            if(!targetcontainer) {
+               targetcontainer = document.getElementsByClassName('contents-main')[0];   
+               num = 2;
+            }
+             targetcontainer.childNodes[num].appendChild(cooldiv);
         }
     };
 }
