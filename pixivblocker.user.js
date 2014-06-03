@@ -4,7 +4,7 @@
 // @description nuke shit
 // @include     /http://.*pixiv\.net/.*/
 // @include     /https?://.*pixiv\.net/.*/
-// @version     1.1.2
+// @version     1.1.3
 // @grant       none
 // ==/UserScript==
 function PB_CFG_CREATE() {
@@ -179,8 +179,8 @@ function PB_CFG_CREATE() {
             }
             cooldiv.innerHTML += coollist.outerHTML;
             
-            var targetcontainer = testElements.item(0).parentNode.parentNode;
-            targetcontainer.insertBefore(cooldiv, targetcontainer.nextSibling);
+            var targetcontainer = document.getElementsByClassName('layout-body')[0];
+            targetcontainer.childNodes[0].appendChild(cooldiv);
         }
     };
 }
@@ -188,7 +188,8 @@ function PB_CFG_CREATE() {
 function populateCSS(){
     var ourcss = "";
 
-    ourcss += ".image-item { height:auto !important; }";
+    ourcss += ".image-item { height:auto !important; }"; //fixes heights being cut off
+    ourcss += ".popular-introduction { position:relative !important; top: 0px !important; left: 0px !important; }"; //fixes popular thing being in the way terribly
     ourcss += ".pixivblocker_minus { padding:0px 4px; background: #77FF88; color:#FFF; cursor:pointer;}";
     ourcss += ".pixivblocker_plus { padding:0px 4px; background: #FF7788; color:#FFF; cursor:pointer; margin-left:5px;}";
     ourcss += ".pixivblocker_shitdiv {width:95%; margin:auto; margin-bottom: 15px; border-bottom: 2px dashed rgba(0,0,0,.2);}";
