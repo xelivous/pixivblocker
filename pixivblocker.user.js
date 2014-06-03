@@ -4,7 +4,7 @@
 // @description nuke shit
 // @include     /http://.*pixiv\.net/.*/
 // @include     /https?://.*pixiv\.net/.*/
-// @version     1.0.4
+// @version     1.0.5
 // @grant       none
 // ==/UserScript==
 function PB_CFG_CREATE() {
@@ -116,8 +116,8 @@ function PB_CFG_CREATE() {
                     if (willyou){
                         realshitlist.splice(x,1);
                         this.setArray(thelist, realshitlist );
-                    return true;
                     }
+                    return false;
                 }
             }
             
@@ -126,6 +126,7 @@ function PB_CFG_CREATE() {
             if (willyou){
                 realshitlist[realshitlist.length] = theuser;
                 this.setArray(thelist, realshitlist );
+                
                 return true;
             }
             return false;
@@ -158,7 +159,7 @@ function PB_CFG_CREATE() {
                 }
                 else{
                     coolspan.className = "pixivblocker_plus";
-                    coolspan.setAttribute("onclick", "PB_CFG.listManage('shitusers','"+u+"');");
+                    coolspan.setAttribute("onclick", "if(PB_CFG.listManage('shitusers','"+u+"')) this.parentNode.parentNode.removeChild(this.parentNode);");
                     coolspan.innerHTML = "🚫";
                     coolspan.title = "Add user to pixivblocker";
                 }
