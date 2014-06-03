@@ -4,7 +4,7 @@
 // @description nuke shit
 // @include     /http://.*pixiv\.net/.*/
 // @include     /https?://.*pixiv\.net/.*/
-// @version     1.1.1
+// @version     1.1.2
 // @grant       none
 // ==/UserScript==
 function PB_CFG_CREATE() {
@@ -69,7 +69,7 @@ function PB_CFG_CREATE() {
             for (var x=0; x<realshitlist.length; x++) {
                 var thisblistitem = realshitlist[x];
                 if ( theuser === thisblistitem ) {
-                    willyou = confirm('Already in the list, remove?');
+                    willyou = confirm('Are you sure you want to unblock this user?');
                     if (willyou){
                         realshitlist.splice(x,1);
                         this.setArray(thelist, realshitlist );
