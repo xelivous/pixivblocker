@@ -4,7 +4,7 @@
 // @description nuke shit
 // @include     /http://.*pixiv\.net/.*/
 // @include     /https?://.*pixiv\.net/.*/
-// @version     1.0.3
+// @version     1.0.4
 // @grant       none
 // ==/UserScript==
 function PB_CFG_CREATE() {
@@ -114,13 +114,10 @@ function PB_CFG_CREATE() {
                 if ( theuser === thisblistitem ) {
                     willyou = confirm('Already in the list, remove?');
                     if (willyou){
-                        alert('Removed ' + theuser);
                         realshitlist.splice(x,1);
                         this.setArray(thelist, realshitlist );
-                    } else {
-                        alert('Keeping ' + theuser);
-                    }
                     return true;
+                    }
                 }
             }
             
@@ -128,7 +125,6 @@ function PB_CFG_CREATE() {
             willyou = confirm('Add to Filterlist?');
             if (willyou){
                 realshitlist[realshitlist.length] = theuser;
-                alert('Added ' + theuser);
                 this.setArray(thelist, realshitlist );
                 return true;
             }
@@ -151,13 +147,14 @@ function PB_CFG_CREATE() {
                 
                 //if shit users
                 if (PB_CFG.arrayContains(u, shitusers)) {
-                    //testElements.item(v).parentNode.removeChild(testElements.item(v));
-                    testElements.item(v).childNodes[0].innerHTML = 'This user is shit<br>';
+                    testElements.item(v).parentNode.removeChild(testElements.item(v));
+                    v--;
+                    //testElements.item(v).childNodes[0].innerHTML = 'This user is shit<br>';
                     
-                    coolspan.className = "pixivblocker_minus";
+                    /*coolspan.className = "pixivblocker_minus";
                     coolspan.setAttribute("onclick", "PB_CFG.listManage('shitusers','"+u+"');");
                     coolspan.innerHTML = "❤";
-                    coolspan.title = "Remove from pixivblocker";
+                    coolspan.title = "Remove from pixivblocker";*/
                 }
                 else{
                     coolspan.className = "pixivblocker_plus";
@@ -199,6 +196,7 @@ function PB_CFG_CREATE() {
 function populateCSS(){
     var ourcss = "";
 
+    ourcss += ".image-item { height:auto !important; }";
     ourcss += ".pixivblocker_minus { padding:0px 4px; background: #77FF88; color:#FFF; cursor:pointer;}";
     ourcss += ".pixivblocker_plus { padding:0px 4px; background: #FF7788; color:#FFF; cursor:pointer; margin-left:5px;}";
     ourcss += ".pixivblocker_shitdiv {width:95%; margin:auto; margin-bottom: 15px; border-bottom: 2px dashed rgba(0,0,0,.2);}";
