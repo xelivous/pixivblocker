@@ -4,7 +4,7 @@
 // @description nuke shit
 // @include     /http://.*pixiv\.net/.*/
 // @include     /https?://.*pixiv\.net/.*/
-// @version     1.1.4
+// @version     1.1.5
 // @grant       none
 // ==/UserScript==
 function PB_CFG_CREATE() {
@@ -95,7 +95,7 @@ function PB_CFG_CREATE() {
                 if (this.sescape(allElements[i].childNodes[1].attributes['data-user_name'].value) === username)
                 {
                     // Element exists with attribute. Add to array.
-                    allElements[i].parentNode.removeChild(allElements[i]);
+                    allElements[i].parentNode.removeChild(allElements[i--]);
                 }
             }
         },
