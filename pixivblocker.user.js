@@ -4,13 +4,14 @@
 // @description nuke shit
 // @include     /http://.*pixiv\.net/.*/
 // @include     /https?://.*pixiv\.net/.*/
-// @version     1.1.5
+// @version     1.1.6
 // @grant       none
 // ==/UserScript==
 function PB_CFG_CREATE() {
     return {
         'settings' : {
-            'shitusers': []
+            'shitusers': [],
+            'weaddedshitusers': false
         },
         getArray: function (myvar)
         {
@@ -102,6 +103,31 @@ function PB_CFG_CREATE() {
         sescape: function(v){
             return v.replace(/&/, "&amp;").replace(/'/g, "&#39;").replace(/"/g, "&quot;");
         },
+        addShitUserList: function(){
+            if(!this.settings['weaddedshitusers']){
+                alert('Loading the list of shit users. This may take a while if you have a ton!\r\nKeep hovering over that area to show them after it\'s done.');
+                var shitusers = PB_CFG.getArray('shitusers');
+                var ourdiv = document.getElementsByClassName('pixivblocker_shitdiv')[0];
+                var coollist = document.createElement('ul');
+                coollist.className = "pixivblocker_shitusers";
+                
+                for(var v = 0; v < shitusers.length; v++){
+                    var coolitem = document.createElement('li');
+
+                    coolspan = document.createElement('span');
+                    coolspan.className = "pixivblocker_minus";
+                    coolspan.setAttribute("onclick", "PB_CFG.listManage('shitusers','"+shitusers[v]+"');");
+                    coolspan.innerHTML = "❤";
+                    coolspan.title = "Remove from pixivblocker";
+
+                    coolitem.innerHTML = shitusers[v] + " " + coolspan.outerHTML;
+                    coollist.innerHTML = coolitem.outerHTML + "\r\n" + coollist.innerHTML;
+                }
+                
+                ourdiv.appendChild(coollist);
+            }
+            this.settings['weaddedshitusers'] = true;
+        },
         init: function ()
         {
             var shitusers = PB_CFG.getArray('shitusers');
@@ -141,7 +167,12 @@ function PB_CFG_CREATE() {
             //add list of shitusers at bottom of page
             var cooldiv = document.createElement('div');
             cooldiv.className = "pixivblocker_shitdiv";
-            cooldiv.innerHTML = "<h3>Shit users you've blocked: <small>(hover me)</small></h3>\r\n";
+            cooldiv.id = "pixivblocker_shitdiv";
+            
+            var coolheader = document.createElement('h3');
+            coolheader.innerHTML = "Shit users you've blocked: <small>(click/hover me)</small>";
+            coolheader.setAttribute("onclick", "PB_CFG.addShitUserList();");
+            cooldiv.innerHTML += coolheader.outerHTML;
             
             var coolbutton = document.createElement('button');
             coolbutton.type = "button";
@@ -161,31 +192,13 @@ function PB_CFG_CREATE() {
             coolbutton.setAttribute("onclick", "PB_CFG.importSetting('shitusers');");
             cooldiv.innerHTML += coolbutton.outerHTML;
             
-            var coollist = document.createElement('ul');
-            coollist.className = "pixivblocker_shitusers";
-            for(var v = 0; v < shitusers.length; v++){
-                var coolitem = document.createElement('li');
-                
-                coolspan = document.createElement('span');
-                
-                coolspan.className = "pixivblocker_minus";
-                coolspan.setAttribute("onclick", "PB_CFG.listManage('shitusers','"+shitusers[v]+"');");
-                coolspan.innerHTML = "❤";
-                coolspan.title = "Remove from pixivblocker";
-                
-                coolitem.innerHTML = shitusers[v] + " " + coolspan.outerHTML;
-                
-                coollist.innerHTML = coolitem.outerHTML + "\r\n" + coollist.innerHTML;
-            }
-            cooldiv.innerHTML += coollist.outerHTML;
-            
             var targetcontainer = document.getElementsByClassName('layout-body')[0];
             var num = 0;
             if(!targetcontainer) {
                targetcontainer = document.getElementsByClassName('contents-main')[0];   
                num = 2;
             }
-             targetcontainer.childNodes[num].appendChild(cooldiv);
+            targetcontainer.childNodes[num].appendChild(cooldiv);
         }
     };
 }
