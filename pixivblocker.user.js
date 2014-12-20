@@ -4,7 +4,8 @@
 // @description nuke shit
 // @include     /http://.*pixiv\.net/.*/
 // @include     /https?://.*pixiv\.net/.*/
-// @version     1.2.0
+// @require     //ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
+// @version     1.2.1
 // @grant       none
 // ==/UserScript==
 function PB_CFG_CREATE() {
@@ -90,30 +91,31 @@ function PB_CFG_CREATE() {
             return false;
         },
         nukeThumbs: function(username){
-            var allElements = document.getElementsByClassName('image-item');
-            for (var i = 0, n = allElements.length; i < n; i++)
-            {
-                console.log(allElements[i].childNodes);
-                if (this.sescape(allElements[i].childNodes[2].attributes['data-user_name'].value) === username)
+           $("li.image-item").each(function(v){
+               var usern = $(this).find($(".ui-profile-popup"));
+                if (usern.data("user_name") === username)
                 {
-                    // Element exists with attribute. Add to array.
-                    allElements[i].parentNode.removeChild(allElements[i--]);
+                    // Element exists with attribute. remove
+                    $(this).remove();
                 }
-            }
+           });
         },
         findAnimationURL: function(){
-            var ourshit = $("#wrapper script").html();
-            var ourlocation = ourshit.indexOf("pixiv.context.ugokuIllustFullscreenData");
-            if(ourlocation !== -1){
-                
-               //basically jump to fullscreen data
-               // then find the first open bracket
-               // then trim off everything after the semicolon
-               // then parse as json
-               ourshit = ourshit.substr(ourlocation); 
-               ourshit = ourshit.substr(ourshit.indexOf("{"));
-               ourshit = ourshit.substr(0, ourshit.indexOf(";"));
-               return JSON.parse(ourshit).src;
+            var ourshit = $("#wrapper script");
+            if(ourshit.length > 0){
+                ourshit = ourshit.html();
+                var ourlocation = ourshit.indexOf("pixiv.context.ugokuIllustFullscreenData");
+                if(ourlocation !== -1){
+
+                   //basically jump to fullscreen data
+                   // then find the first open bracket
+                   // then trim off everything after the semicolon
+                   // then parse as json
+                   ourshit = ourshit.substr(ourlocation); 
+                   ourshit = ourshit.substr(ourshit.indexOf("{"));
+                   ourshit = ourshit.substr(0, ourshit.indexOf(";"));
+                   return JSON.parse(ourshit).src;
+                }
             }
             return false;
         },
@@ -149,40 +151,29 @@ function PB_CFG_CREATE() {
         {
             var shitusers = PB_CFG.getArray('shitusers');
             console.log("[PixivBlocker] Currently blocking " + shitusers.length + " shit users.");
-            var testElements = document.getElementsByClassName('image-item');
-            var testDivs = Array.prototype.filter.call(testElements, function (testElement) {
-                return testElement.nodeName === 'LI';
-            });
+            var testElements = $("li.image-item");
             var coolspan;
             //go through list of thumbnails and add stuff to them
-            for (var v = 0, u = null; v < testElements.length; v++, u = null) {
-                if(testElements.item(v).childNodes[2].attributes['data-user_name'].value !== 'undefined'){
-                    u = testElements.item(v).childNodes[2].attributes['data-user_name'].value;
-                    u = this.sescape(u);
+            $("li.image-item").each(function(v){
+                  var username = $(this).find($(".ui-profile-popup"));
+                 if(username.data("user_name") !== 'undefined'){
+                    u = username.data("user_name");
+                    u = PB_CFG.sescape(u);
 
-                    //add +/- next to names
                     coolspan = document.createElement('span');
-
                     //if shit users
                     if (PB_CFG.arrayContains(u, shitusers)) {
-                        testElements.item(v).parentNode.removeChild(testElements.item(v));
-                        v--;
-                        //testElements.item(v).childNodes[0].innerHTML = 'This user is shit<br>';
-
-                        /*coolspan.className = "pixivblocker_minus";
-                        coolspan.setAttribute("onclick", "PB_CFG.listManage('shitusers','"+u+"');");
-                        coolspan.innerHTML = "❤";
-                        coolspan.title = "Remove from pixivblocker";*/
+                        $(this).remove();
                     }
                     else{
                         coolspan.className = "pixivblocker_plus";
                         coolspan.setAttribute("onclick", "if(PB_CFG.listManage('shitusers','"+u+"')) PB_CFG.nukeThumbs('"+u+"');");
                         coolspan.innerHTML = "🚫";
                         coolspan.title = "Add user to pixivblocker";
-                        testElements.item(v).insertBefore(coolspan, testElements.item(v).childNodes[2].nextSibling);
+                        username.parent().append(coolspan);
                     }
                }
-            }
+            });
             
             //add list of shitusers at bottom of page
             var cooldiv = document.createElement('div');
@@ -190,7 +181,7 @@ function PB_CFG_CREATE() {
             cooldiv.id = "pixivblocker_shitdiv";
             
             var coolheader = document.createElement('h3');
-            coolheader.innerHTML = "Shit users you've blocked: <small>(click/hover me)</small>";
+            coolheader.innerHTML = "Shit users you've blocked: <small>(click & hover me)</small>";
             coolheader.setAttribute("onclick", "PB_CFG.addShitUserList();");
             cooldiv.innerHTML += coolheader.outerHTML;
             
@@ -215,21 +206,21 @@ function PB_CFG_CREATE() {
             //animation shit
             var animcontain = $("._ugoku-illust-player-container");
             
-            if(animcontain !== undefined){
+            if(animcontain.length > 0){
                var coolbutton = document.createElement('a');
                coolbutton.setAttribute("href", this.findAnimationURL());
                coolbutton.setAttribute("class", "_button");
                coolbutton.innerHTML += "Download Animation As .ZIP";
                $("._work-detail-unit .action").first().prepend(coolbutton);
             }
+           
             
-            var targetcontainer = document.getElementsByClassName('layout-body')[0];
-            var num = 0;
-            if(!targetcontainer) {
-               targetcontainer = document.getElementsByClassName('contents-main')[0];   
-               num = 2;
+            var targetcontainer = $(".contents-main .NewsTop");
+            if(targetcontainer.length == 0){
+                targetcontainer = $(".layout-body ._unit").first();
             }
-            targetcontainer.childNodes[num].appendChild(cooldiv);
+            
+            targetcontainer.append(cooldiv);
         }
     };
 }
