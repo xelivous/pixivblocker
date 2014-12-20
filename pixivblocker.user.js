@@ -4,7 +4,7 @@
 // @description nuke shit
 // @include     /http://.*pixiv\.net/.*/
 // @include     /https?://.*pixiv\.net/.*/
-// @version     1.1.6
+// @version     1.2.0
 // @grant       none
 // ==/UserScript==
 function PB_CFG_CREATE() {
@@ -101,6 +101,22 @@ function PB_CFG_CREATE() {
                 }
             }
         },
+        findAnimationURL: function(){
+            var ourshit = $("#wrapper script").html();
+            var ourlocation = ourshit.indexOf("pixiv.context.ugokuIllustFullscreenData");
+            if(ourlocation !== -1){
+                
+               //basically jump to fullscreen data
+               // then find the first open bracket
+               // then trim off everything after the semicolon
+               // then parse as json
+               ourshit = ourshit.substr(ourlocation); 
+               ourshit = ourshit.substr(ourshit.indexOf("{"));
+               ourshit = ourshit.substr(0, ourshit.indexOf(";"));
+               return JSON.parse(ourshit).src;
+            }
+            return false;
+        },
         sescape: function(v){
             return v.replace(/&/, "&amp;").replace(/'/g, "&#39;").replace(/"/g, "&quot;");
         },
@@ -195,6 +211,17 @@ function PB_CFG_CREATE() {
             coolbutton.innerHTML += "IMPORT";
             coolbutton.setAttribute("onclick", "PB_CFG.importSetting('shitusers');");
             cooldiv.innerHTML += coolbutton.outerHTML;
+            
+            //animation shit
+            var animcontain = $("._ugoku-illust-player-container");
+            
+            if(animcontain !== undefined){
+               var coolbutton = document.createElement('a');
+               coolbutton.setAttribute("href", this.findAnimationURL());
+               coolbutton.setAttribute("class", "_button");
+               coolbutton.innerHTML += "Download Animation As .ZIP";
+               $("._work-detail-unit .action").first().prepend(coolbutton);
+            }
             
             var targetcontainer = document.getElementsByClassName('layout-body')[0];
             var num = 0;
