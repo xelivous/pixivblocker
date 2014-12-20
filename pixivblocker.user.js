@@ -93,7 +93,8 @@ function PB_CFG_CREATE() {
             var allElements = document.getElementsByClassName('image-item');
             for (var i = 0, n = allElements.length; i < n; i++)
             {
-                if (this.sescape(allElements[i].childNodes[1].attributes['data-user_name'].value) === username)
+                console.log(allElements[i].childNodes);
+                if (this.sescape(allElements[i].childNodes[2].attributes['data-user_name'].value) === username)
                 {
                     // Element exists with attribute. Add to array.
                     allElements[i].parentNode.removeChild(allElements[i--]);
@@ -131,6 +132,7 @@ function PB_CFG_CREATE() {
         init: function ()
         {
             var shitusers = PB_CFG.getArray('shitusers');
+            console.log("[PixivBlocker] Currently blocking " + shitusers.length + " shit users.");
             var testElements = document.getElementsByClassName('image-item');
             var testDivs = Array.prototype.filter.call(testElements, function (testElement) {
                 return testElement.nodeName === 'LI';
@@ -138,30 +140,32 @@ function PB_CFG_CREATE() {
             var coolspan;
             //go through list of thumbnails and add stuff to them
             for (var v = 0, u = null; v < testElements.length; v++, u = null) {
-                u = testElements.item(v).childNodes[1].attributes['data-user_name'].value
-                u = this.sescape(u);
-                
-                //add +/- next to names
-                coolspan = document.createElement('span');
-                
-                //if shit users
-                if (PB_CFG.arrayContains(u, shitusers)) {
-                    testElements.item(v).parentNode.removeChild(testElements.item(v));
-                    v--;
-                    //testElements.item(v).childNodes[0].innerHTML = 'This user is shit<br>';
-                    
-                    /*coolspan.className = "pixivblocker_minus";
-                    coolspan.setAttribute("onclick", "PB_CFG.listManage('shitusers','"+u+"');");
-                    coolspan.innerHTML = "❤";
-                    coolspan.title = "Remove from pixivblocker";*/
-                }
-                else{
-                    coolspan.className = "pixivblocker_plus";
-                    coolspan.setAttribute("onclick", "if(PB_CFG.listManage('shitusers','"+u+"')) PB_CFG.nukeThumbs('"+u+"');");
-                    coolspan.innerHTML = "🚫";
-                    coolspan.title = "Add user to pixivblocker";
-                    testElements.item(v).insertBefore(coolspan, testElements.item(v).childNodes[1].nextSibling);
-                }
+                if(testElements.item(v).childNodes[2].attributes['data-user_name'].value !== 'undefined'){
+                    u = testElements.item(v).childNodes[2].attributes['data-user_name'].value;
+                    u = this.sescape(u);
+
+                    //add +/- next to names
+                    coolspan = document.createElement('span');
+
+                    //if shit users
+                    if (PB_CFG.arrayContains(u, shitusers)) {
+                        testElements.item(v).parentNode.removeChild(testElements.item(v));
+                        v--;
+                        //testElements.item(v).childNodes[0].innerHTML = 'This user is shit<br>';
+
+                        /*coolspan.className = "pixivblocker_minus";
+                        coolspan.setAttribute("onclick", "PB_CFG.listManage('shitusers','"+u+"');");
+                        coolspan.innerHTML = "❤";
+                        coolspan.title = "Remove from pixivblocker";*/
+                    }
+                    else{
+                        coolspan.className = "pixivblocker_plus";
+                        coolspan.setAttribute("onclick", "if(PB_CFG.listManage('shitusers','"+u+"')) PB_CFG.nukeThumbs('"+u+"');");
+                        coolspan.innerHTML = "🚫";
+                        coolspan.title = "Add user to pixivblocker";
+                        testElements.item(v).insertBefore(coolspan, testElements.item(v).childNodes[2].nextSibling);
+                    }
+               }
             }
             
             //add list of shitusers at bottom of page
@@ -234,11 +238,19 @@ function populateCSS(){
 }
 
 function addJS (str){
-    var head = document.getElementsByTagName('head')[0];
-    if (!head) { return; }
-    var style = document.createElement('script');
-    style.innerHTML = str;
-    head.appendChild(style);
+    if (document.getElementById("pixivblockerscript") !== null)
+    {
+        document.getElementById("pixivblockerscript").innerHTML = str;
+    }
+    else 
+    {
+        var head = document.getElementsByTagName('head')[0];
+        if (!head) { return; }
+        var style = document.createElement('script');
+        style.id = "pixivblockerscript";
+        style.innerHTML = str;
+        head.appendChild(style);
+    }
 }
 
 var cooljs = ''+
