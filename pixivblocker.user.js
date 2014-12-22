@@ -5,7 +5,7 @@
 // @include     /http://.*pixiv\.net/.*/
 // @include     /https?://.*pixiv\.net/.*/
 // @require     //ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
-// @version     1.2.1
+// @version     1.2.2
 // @grant       none
 // ==/UserScript==
 function PB_CFG_CREATE() {
@@ -157,7 +157,7 @@ function PB_CFG_CREATE() {
             $("li.image-item").each(function(v){
                   var username = $(this).find($(".ui-profile-popup"));
                  if(username.data("user_name") !== 'undefined'){
-                    u = username.data("user_name");
+                    u = "" + username.data("user_name");
                     u = PB_CFG.sescape(u);
 
                     coolspan = document.createElement('span');
