@@ -5,7 +5,7 @@
 // @include     /http://.*pixiv\.net/.*/
 // @include     /https?://.*pixiv\.net/.*/
 // @require     //ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
-// @version     1.2.2
+// @version     1.3.0
 // @grant       none
 // ==/UserScript==
 function PB_CFG_CREATE() {
@@ -101,23 +101,7 @@ function PB_CFG_CREATE() {
            });
         },
         findAnimationURL: function(){
-            var ourshit = $("#wrapper script");
-            if(ourshit.length > 0){
-                ourshit = ourshit.html();
-                var ourlocation = ourshit.indexOf("pixiv.context.ugokuIllustFullscreenData");
-                if(ourlocation !== -1){
-
-                   //basically jump to fullscreen data
-                   // then find the first open bracket
-                   // then trim off everything after the semicolon
-                   // then parse as json
-                   ourshit = ourshit.substr(ourlocation); 
-                   ourshit = ourshit.substr(ourshit.indexOf("{"));
-                   ourshit = ourshit.substr(0, ourshit.indexOf(";"));
-                   return JSON.parse(ourshit).src;
-                }
-            }
-            return false;
+            return pixiv.context.ugokuIllustFullscreenData.src || false;
         },
         sescape: function(v){
             return v.replace(/&/, "&amp;").replace(/'/g, "&#39;").replace(/"/g, "&quot;");
@@ -146,6 +130,28 @@ function PB_CFG_CREATE() {
                 ourdiv.appendChild(coollist);
             }
             this.settings['weaddedshitusers'] = true;
+        },
+        rewriteImageURL: function(myurl){
+            if(typeof myurl != 'undefined'){
+                var myext = ".png";
+                if(myurl.indexOf("_m.png") !== -1 ){
+                    myext = ".png";
+                } else if (myurl.indexOf("_m.jpg") !== -1 ) {
+                    myext = ".jpg";
+                } else if (myurl.indexOf("_m.gif") !== -1 ) {
+                    myext = ".gif";
+                } else if(myurl.indexOf("_master1200.jpg") !== -1){
+                    var srcarr = myurl.split(/(\/.*\.net\/)(?:.*)(\/img\/(?:\d*\/)*\d*_)(.{2})(?:.*)(\.\S*$)/g);
+                    return [srcarr[1] + "img-original" + srcarr[2] + srcarr[3] + srcarr[4], pixiv.context.illustId + "_" + srcarr[3] + srcarr[4]];
+                } else {
+                    var srcarr = myurl.split(/(\/.*\.net\/.*)(?:_)(\S*)(\.\S*$)/g);
+                    console.log(srcarr);
+                    return [srcarr[1] + "_big_" + srcarr[2] + srcarr[3], pixiv.context.illustId + "_" + srcarr[2] + srcarr[3]];
+                }
+                
+                return [myurl.substr(0, myurl.indexOf("_m"+myext)) + myext, "testtest"];
+            }
+            return myurl;
         },
         init: function ()
         {
@@ -204,16 +210,52 @@ function PB_CFG_CREATE() {
             cooldiv.innerHTML += coolbutton.outerHTML;
             
             //animation shit
+            // also various image rippers
             var animcontain = $("._ugoku-illust-player-container");
+            var imgcontain = $(".works_display div img");
+            var mangacontain = $("#main .manga .item-container img");
             
             if(animcontain.length > 0){
-               var coolbutton = document.createElement('a');
-               coolbutton.setAttribute("href", this.findAnimationURL());
-               coolbutton.setAttribute("class", "_button");
-               coolbutton.innerHTML += "Download Animation As .ZIP";
-               $("._work-detail-unit .action").first().prepend(coolbutton);
+                var coolbutton = document.createElement('a');
+                coolbutton.setAttribute("class", "_button");
+                coolbutton.setAttribute("href", this.findAnimationURL());
+                coolbutton.innerHTML += "Download Animation As .ZIP";
+                $("._work-detail-unit .action").first().prepend(coolbutton);
+            } else if(imgcontain.length > 0 && imgcontain.parent().parent().attr('href').indexOf("manga") == -1 ){
+                var myurl = imgcontain.attr('src');
+                
+                myurl = PB_CFG.rewriteImageURL(myurl)[0];
+                
+                var coolbutton = document.createElement('a');
+                coolbutton.setAttribute("class", "_button");
+                coolbutton.setAttribute("href", myurl);
+                coolbutton.innerHTML += "Download Full Size Image";
+                $("._work-detail-unit .action").first().prepend(coolbutton);
+            } else if(mangacontain.length > 0) {
+                var mangadiv = document.createElement('div');
+                mangadiv.id = "mangaimgdownload";
+                mangadiv.style = "max-width: 250px; margin: 10px; position: fixed; overflow-y:auto; max-height: calc(100% - 20px);";
+                mangadiv.innerHTML = "<strong>Download HI-RES Images</strong>";
+                $("#main .manga").prepend(mangadiv);
+                
+                mangacontain.each(function(v){
+                    var src = $(this).data("src");
+                    var srcarr = PB_CFG.rewriteImageURL(src);
+                    src = srcarr[0];
+
+                    if(typeof src != 'undefined'){
+                        var currname = srcarr[1];
+                        var coolbutton = document.createElement('a');
+                        //coolbutton.setAttribute("class", "_button");
+                        coolbutton.setAttribute("href", src);
+                        coolbutton.target = '_blank';
+                        coolbutton.download = srcarr[1];
+                        coolbutton.style = "display: block;";
+                        coolbutton.innerHTML += "Download " + srcarr[1];
+                        $("#mangaimgdownload").append(coolbutton);
+                    }
+                });
             }
-           
             
             var targetcontainer = $(".contents-main .NewsTop");
             if(targetcontainer.length == 0){
@@ -221,6 +263,7 @@ function PB_CFG_CREATE() {
             }
             
             targetcontainer.append(cooldiv);
+            
         }
     };
 }
