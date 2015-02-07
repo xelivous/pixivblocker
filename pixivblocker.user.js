@@ -5,7 +5,7 @@
 // @include     /http://.*pixiv\.net/.*/
 // @include     /https?://.*pixiv\.net/.*/
 // @require     //ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
-// @version     1.3.0
+// @version     1.3.1
 // @grant       none
 // ==/UserScript==
 function PB_CFG_CREATE() {
@@ -141,7 +141,7 @@ function PB_CFG_CREATE() {
                 } else if (myurl.indexOf("_m.gif") !== -1 ) {
                     myext = ".gif";
                 } else if(myurl.indexOf("_master1200.jpg") !== -1){
-                    var srcarr = myurl.split(/(\/.*\.net\/)(?:.*)(\/img\/(?:\d*\/)*\d*_)(.{2})(?:.*)(\.\S*$)/g);
+                    var srcarr = myurl.split(/(\/.*\.net\/)(?:.*)(\/img\/(?:\d*\/)*\d*_)(.*)(?:_)(?:.*)(\.\S*$)/g);
                     return [srcarr[1] + "img-original" + srcarr[2] + srcarr[3] + srcarr[4], pixiv.context.illustId + "_" + srcarr[3] + srcarr[4]];
                 } else {
                     var srcarr = myurl.split(/(\/.*\.net\/.*)(?:_)(\S*)(\.\S*$)/g);
@@ -213,6 +213,7 @@ function PB_CFG_CREATE() {
             // also various image rippers
             var animcontain = $("._ugoku-illust-player-container");
             var imgcontain = $(".works_display div img");
+			var ismanga = $(".works_display a");
             var mangacontain = $("#main .manga .item-container img");
             
             if(animcontain.length > 0){
@@ -221,7 +222,7 @@ function PB_CFG_CREATE() {
                 coolbutton.setAttribute("href", this.findAnimationURL());
                 coolbutton.innerHTML += "Download Animation As .ZIP";
                 $("._work-detail-unit .action").first().prepend(coolbutton);
-            } else if(imgcontain.length > 0 && imgcontain.parent().parent().attr('href').indexOf("manga") == -1 ){
+            } else if(imgcontain.length && ismanga.length < 1 ){
                 var myurl = imgcontain.attr('src');
                 
                 myurl = PB_CFG.rewriteImageURL(myurl)[0];
