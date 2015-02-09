@@ -4,7 +4,7 @@
 // @description nuke shit
 // @include     /.*\/\/.*pixiv\.net/.*/
 // @require     http://code.jquery.com/jquery-1.11.2.min.js
-// @version     2.0.2
+// @version     2.0.1
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_deleteValue
@@ -77,7 +77,7 @@ configObj.prototype.get = function(name) {
 };
 configObj.prototype.reset = function(name) {
     GM_deleteValue(this.prefix + name);
-    logger("Reset the value of " + this.prefix + name);
+    console.log("Reset the value of " + this.prefix + name);
 };
 configObj.prototype.resetAll = function(){
     //HACK: greasemonkey keeps having GM_ListValues() break and this is a bad workaround
@@ -89,7 +89,7 @@ configObj.prototype.resetAll = function(){
         }
     });
 
-    logger("Deleted the following keys: ", keys);
+    console.log("Deleted the following keys: ", keys);
 };
 configObj.prototype.list = function(){
     //HACK: greasemonkey keeps having GM_ListValues() break and this is a bad workaround
