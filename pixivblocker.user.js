@@ -4,7 +4,7 @@
 // @description nuke shit
 // @include     /.*\/\/.*pixiv\.net/.*/
 // @require     http://code.jquery.com/jquery-1.11.2.min.js
-// @version     2.0.1
+// @version     2.0.3
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_deleteValue
@@ -76,8 +76,10 @@ configObj.prototype.get = function(name) {
     return tempvalue || value;
 };
 configObj.prototype.reset = function(name) {
-    GM_deleteValue(this.prefix + name);
-    console.log("Reset the value of " + this.prefix + name);
+    if(confirm('Are you sure you want to unblock all users!!??')){
+        GM_deleteValue(this.prefix + name);
+        console.log("Reset the value of " + this.prefix + name);
+    }
 };
 configObj.prototype.resetAll = function(){
     //HACK: greasemonkey keeps having GM_ListValues() break and this is a bad workaround
