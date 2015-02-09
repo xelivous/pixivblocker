@@ -5,9 +5,12 @@
 // @include     /http://.*pixiv\.net/.*/
 // @include     /https?://.*pixiv\.net/.*/
 // @require     //ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js
-// @version     1.3.1
-// @grant       none
+// @version     1.3.2
+// @grant       GM_addStyle
 // ==/UserScript==
+
+// the @grant is a workaround for jquery sandboxing or whatever
+
 function PB_CFG_CREATE() {
     return {
         'settings' : {
@@ -261,10 +264,8 @@ function PB_CFG_CREATE() {
             var targetcontainer = $(".contents-main .NewsTop");
             if(targetcontainer.length == 0){
                 targetcontainer = $(".layout-body ._unit").first();
+                targetcontainer.append(cooldiv);
             }
-            
-            targetcontainer.append(cooldiv);
-            
         }
     };
 }
@@ -289,7 +290,7 @@ function populateCSS(){
     if (document.getElementById("PB_CSS") !== null){
         document.getElementById("PB_CSS").innerHTML = ourcss;
     } else {
-        var head = document.getElementsByTagName('head')[0];
+        var head = document.head;
         if (!head) { return; }
         var style = document.createElement('style');
         style.type = 'text/css';
@@ -306,7 +307,7 @@ function addJS (str){
     }
     else 
     {
-        var head = document.getElementsByTagName('head')[0];
+        var head = document.body;
         if (!head) { return; }
         var style = document.createElement('script');
         style.id = "pixivblockerscript";
@@ -315,10 +316,11 @@ function addJS (str){
     }
 }
 
+
 var cooljs = ''+
 PB_CFG_CREATE.toString()+
 'var PB_CFG = new PB_CFG_CREATE();'+
 'PB_CFG.init();';
 
-    addJS(cooljs);
-    populateCSS();
+addJS(cooljs);
+populateCSS();
