@@ -4,7 +4,7 @@
 // @description nuke shit
 // @include     /.*\/\/.*pixiv\.net/.*/
 // @require     http://code.jquery.com/jquery-1.11.2.min.js
-// @version     2.0.0
+// @version     2.0.1
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_deleteValue
@@ -111,9 +111,12 @@ configObj.prototype.exportSetting = function (settvar){
 };
 configObj.prototype.importSetting = function (settvar){
     try {
-        var wef = JSON.parse(prompt("Paste your blocked users separated by comma:"));
+        var wef = prompt("Paste your blocked users separated by comma:");
         if(wef){
-           config.set(settvar, wef);
+            wef = wef.replace(/([^,]+)/g, "\"$&\"");
+            wef = "[" + wef + "]"; 
+            wef = JSON.parse(wef);
+            config.set(settvar, wef);
         }
     } catch (e) {
         console.log('Error: ', e);
