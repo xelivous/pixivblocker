@@ -4,7 +4,7 @@
 // @description nuke shit
 // @include     /.*\/\/.*pixiv\.net/.*/
 // @require     http://code.jquery.com/jquery-1.11.2.min.js
-// @version     2.0.1
+// @version     2.0.2
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_deleteValue
@@ -45,11 +45,11 @@ function rewriteImageURL(myurl){
             myext = ".gif";
         } else if(myurl.indexOf("_master1200.jpg") !== -1){
             var srcarr = myurl.split(/(\/.*\.net\/)(?:.*)(\/img\/(?:\d*\/)*\d*_)(.*)(?:_)(?:.*)(\.\S*$)/g);
-            return [srcarr[1] + "img-original" + srcarr[2] + srcarr[3] + srcarr[4], pixiv.context.illustId + "_" + srcarr[3] + srcarr[4]];
+            return [srcarr[1] + "img-original" + srcarr[2] + srcarr[3] + srcarr[4], unsafeWindow.pixiv.context.illustId + "_" + srcarr[3] + srcarr[4]];
         } else {
             var srcarr = myurl.split(/(\/.*\.net\/.*)(?:_)(\S*)(\.\S*$)/g);
             console.log(srcarr);
-            return [srcarr[1] + "_big_" + srcarr[2] + srcarr[3], pixiv.context.illustId + "_" + srcarr[2] + srcarr[3]];
+            return [srcarr[1] + "_big_" + srcarr[2] + srcarr[3], unsafeWindow.pixiv.context.illustId + "_" + srcarr[2] + srcarr[3]];
         }
 
         return [myurl.substr(0, myurl.indexOf("_m"+myext)) + myext, "testtest"];
@@ -225,7 +225,7 @@ function detectPageStuff(){
     } else if(imgcontain.length && ismanga.length < 1 ){
         var myurl = imgcontain.attr('src');
 
-        myurl = PB_CFG.rewriteImageURL(myurl)[0];
+        myurl = rewriteImageURL(myurl)[0];
 
         var coolbutton = document.createElement('a');
         coolbutton.setAttribute("class", "_button");
