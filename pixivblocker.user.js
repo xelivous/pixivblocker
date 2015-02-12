@@ -4,7 +4,7 @@
 // @description nuke shit
 // @include     /.*\/\/.*pixiv\.net/.*/
 // @require     http://code.jquery.com/jquery-1.11.2.min.js
-// @version     2.0.3
+// @version     2.0.4
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_deleteValue
@@ -18,6 +18,7 @@ function arrayContains(needle, arrhaystack) {
     return (arrhaystack.indexOf(needle) > - 1);
 }
 function nukeThumbs(username) {
+    
    $("li.image-item").each(function(v){
        var usern = $(this).find($(".ui-profile-popup"));
         if (usern.data("user_name") === username)
@@ -272,8 +273,9 @@ function init() {
     $("li.image-item").each(function(v){
          var username = $(this).find($(".ui-profile-popup"));
          if(username.data("user_name") !== 'undefined'){
-            u = "" + username.data("user_name");
+            var u = "" + username.data("user_name");
             u = sescape(u);
+            console.log(u);
 
             //if shit user
             if (arrayContains(u, shitusers)) {
