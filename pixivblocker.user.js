@@ -4,7 +4,7 @@
 // @description nuke shit
 // @include     /.*\/\/.*pixiv\.net/.*/
 // @require     http://code.jquery.com/jquery-1.11.2.min.js
-// @version     2.0.4
+// @version     2.0.5
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_deleteValue
@@ -239,12 +239,12 @@ function detectPageStuff(){
         var mangadiv = document.createElement('div');
         mangadiv.id = "mangaimgdownload";
         mangadiv.style = "max-width: 250px; margin: 10px; position: fixed; overflow-y:auto; max-height: calc(100% - 20px);";
-        mangadiv.innerHTML = "<strong>Download HI-RES Images</strong>";
+        mangadiv.innerHTML = "<strong>Download HI-RES Images</strong><p><small>DownThemAll regex: </small><input type=\"text/css\" value=\"/.*_p\\d*\\.jpg/\"></input></p>";
         $("#main .manga").prepend(mangadiv);
 
         mangacontain.each(function(v){
             var src = $(this).data("src");
-            var srcarr = PB_CFG.rewriteImageURL(src);
+            var srcarr = rewriteImageURL(src);
             src = srcarr[0];
 
             if(typeof src != 'undefined'){
@@ -275,7 +275,6 @@ function init() {
          if(username.data("user_name") !== 'undefined'){
             var u = "" + username.data("user_name");
             u = sescape(u);
-            console.log(u);
 
             //if shit user
             if (arrayContains(u, shitusers)) {
