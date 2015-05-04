@@ -4,7 +4,7 @@
 // @description nuke shit
 // @include     /.*\/\/.*pixiv\.net/.*/
 // @require     http://code.jquery.com/jquery-1.11.2.min.js
-// @version     2.0.5
+// @version     2.0.6
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_deleteValue
@@ -56,6 +56,21 @@ function rewriteImageURL(myurl){
         return [myurl.substr(0, myurl.indexOf("_m"+myext)) + myext, "testtest"];
     }
     return myurl;
+}
+
+function checkIfImageExists(myurl){
+    
+    var extsToCheck = [".jpg",".png"];
+    
+    for(var i=0, found=false; i<extsToCheck.length || found; i++){
+        var newurl = myurl.replace(/\.[^/.]+$/, "") + extsToCheck[i];
+        
+        var img = new Image();
+        img.src = newurl;
+        if( img.height != 0 ){ //exists
+            return newurl;
+        }
+    }
 }
 
 
@@ -229,12 +244,21 @@ function detectPageStuff(){
         var myurl = imgcontain.attr('src');
 
         myurl = rewriteImageURL(myurl)[0];
+        myurl = checkIfImageExists(myurl);
 
         var coolbutton = document.createElement('a');
         coolbutton.setAttribute("class", "_button");
-        coolbutton.setAttribute("href", myurl);
-        coolbutton.innerHTML += "Download Full Size Image";
+        
+        if(myurl) {
+            coolbutton.setAttribute("href", myurl);
+            coolbutton.innerHTML += "Download Full Size Image";
+            
+        } else {
+            coolbutton.innerHTML += "Something went wrong!";
+        }
+        
         $("._work-detail-unit .action").first().prepend(coolbutton);
+        
     } else if(mangacontain.length > 0) {
         var mangadiv = document.createElement('div');
         mangadiv.id = "mangaimgdownload";
