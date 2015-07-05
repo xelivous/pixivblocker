@@ -4,7 +4,7 @@
 // @description nuke shit
 // @include     /.*\/\/.*pixiv\.net/.*/
 // @require     http://code.jquery.com/jquery-1.11.2.min.js
-// @version     2.0.9
+// @version     2.0.10
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_deleteValue
@@ -312,13 +312,14 @@ var configObj = function (prefix, settings, descriptions) {
         return this.get(settvar);
     };
     this.importSetting = function (settvar, values){
+        var mythis = this;
         try {
             var wef = values;
             if(wef){
                 wef = wef.replace(/([^,]+)/g, "\"$&\"");
                 wef = "[" + wef + "]"; 
                 wef = JSON.parse(wef);
-                config.set(settvar, wef);
+                mythis.set(settvar, wef);
             }
         } catch (e) {
             console.log('Error: ', e);
