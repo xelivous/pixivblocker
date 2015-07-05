@@ -4,7 +4,7 @@
 // @description nuke shit
 // @include     /.*\/\/.*pixiv\.net/.*/
 // @require     http://code.jquery.com/jquery-1.11.2.min.js
-// @version     2.0.8
+// @version     2.0.9
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_deleteValue
@@ -619,6 +619,8 @@ function init() {
            }
        }
     });
+    
+    addConfigPanelThing();
 
 
     if(config.get("hideshitusers") === true){
@@ -674,7 +676,6 @@ function init() {
     }
         
     detectPageStuff();
-    addConfigPanelThing();
 }
 
 
