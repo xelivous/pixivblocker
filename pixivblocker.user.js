@@ -4,7 +4,7 @@
 // @description nuke shit
 // @include     /.*\/\/.*pixiv\.net/.*/
 // @require     http://code.jquery.com/jquery-1.11.2.min.js
-// @version     2.0.7
+// @version     2.0.8
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_deleteValue
@@ -138,7 +138,7 @@ var configObj = function (prefix, settings, descriptions) {
         var value = GM_getValue(this.prefix + name);
 
         // nothing is set yet, so make sure to set our default for easy configuration
-        if(typeof value === 'undefined') {
+        if(typeof value === 'undefined' || value == null) {
             value = def || this.settings[name];
             if(typeof(value) !== 'undefined') this.set(name, value);
             return value;
@@ -153,7 +153,7 @@ var configObj = function (prefix, settings, descriptions) {
         return tempvalue || value;
     };
     this.reset = function(name) {
-        if(confirm('Are you sure you want to RESET YOUR SHIT USERS???')){
+        if(confirm('Are you sure you want to RESET THIS SETTING???')){
             var mypref = this.prefix + name;
             GM_deleteValue(mypref);
             console.log("Reset the value of " + mypref);
@@ -166,7 +166,7 @@ var configObj = function (prefix, settings, descriptions) {
         var mythis = this; //hack
         keys.map(function(key) {
             if(key.indexOf(mythis.prefix) !== -1){
-                console.log("Deleted key: ", key);
+                //console.log("Deleted key: ", key);
                 GM_deleteValue(key);
             }
         });
@@ -232,6 +232,7 @@ var configObj = function (prefix, settings, descriptions) {
                 .addClass("pixivblocker_config value " + typeof(value));
 
             var myinput = $(document.createElement("input")).attr("value", value);
+            console.log(node, key, value);
 
             switch(typeof value){
                 case "number":
@@ -302,6 +303,7 @@ var configObj = function (prefix, settings, descriptions) {
         var mylist = this.list();
         for(var i = 0; i < mylist.length; i++){
             var mykey = Object.keys(mylist[i])[0];
+            //console.log(i, mykey, mylist[i], mylist[i][mykey]);
             this.prettyPrint(mytable, mykey, mylist[i][mykey]);
         }
     };
@@ -568,9 +570,9 @@ function addConfigPanelThing(){
 
 function init() {
     var shitusers = data.get('shitusers');
-    console.log("[PixivBlocker] Currently blocking " + shitusers.length + " shit users.");
-
-    addConfigPanelThing();
+    if(shitusers && typeof shitusers !== "undefined" && shitusers !== "null") {
+        console.log("[PixivBlocker] Currently blocking " + shitusers.length + " shit users.");
+    }
     
     var testElements = $("li.image-item");
     
@@ -672,6 +674,7 @@ function init() {
     }
         
     detectPageStuff();
+    addConfigPanelThing();
 }
 
 
